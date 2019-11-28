@@ -10,7 +10,6 @@
         "lint": "eslint --fix --ext .js,.vue src"
     },
     "pre-commit": [
-        "fix",
         "lint"
     ],
     "repository": {
