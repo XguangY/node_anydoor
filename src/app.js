@@ -1,25 +1,36 @@
-const http = require('http');
-const chalk = require('chalk');
-const path = require('path');
-const conf = require('./config/defaultConfig');
-const route = require('./helper/route');
+// 引入http内置模块
+const http = require('http')
 
-class Server {
-  constructor(config) {
-    this.conf = Object.assign({}, conf, config);
-  }
+// 引入chalk 用于美化后台打印
+const chalk = require('chalk')
 
-  start() {
-    const server = http.createServer((req, res) => {
-      const filePath = path.join(this.conf.root, req.url);
-      route(req, res, filePath, this.conf);
-    });
+// 引入基本配置
+const conf = require('./config/defaultConfig')
 
-    server.listen(this.conf.port, this.conf.hostname, () => {
-      const addr = `http://${this.conf.hostname}:${this.conf.port}`;
-      console.info(`Server started at ${chalk.green(addr)}`);
-    });
-  }
-}
+// 创建一个server 实例
+const server = http.createServer((rep, res) => {
+  // 状态码
+  res.statusCode = 200
 
-module.exports = Server;
+  // 设置相应头部
+  res.setHeader('Content-Type', 'text/html')
+
+  //  注意write写入可以一直拼接下去，注意最后end 即可
+  res.write('<html>')
+  res.write('<body>')
+  res.write('<h1 style="color: blue">')
+  res.write('ah, http111 !')
+  res.write('</h1>')
+  res.write('</body>')
+
+  // 输出
+  res.end('</html>')
+})
+
+// 监听 server 实例
+
+server.listen(conf.port, conf.hostname, () => {
+  const addr = `http:// ${conf.hostname}:${conf.port}`
+
+  console.info(`server startd at ${chalk.green(addr)}`)
+})

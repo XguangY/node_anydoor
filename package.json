@@ -7,8 +7,7 @@
         "node_anydoor": "bin/node_anydoor"
     },
     "scripts": {
-        "lint": "eslint .",
-        "fix": "eslint --fix ."
+        "lint": "eslint --fix --ext .js,.vue src"
     },
     "pre-commit": [
         "fix",
