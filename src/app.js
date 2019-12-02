@@ -5,8 +5,8 @@ const http = require('http')
 const chalk = require('chalk')
 
 const path = require('path')
-const fs = require('fs')
 
+const route = require('./header/route')
 // 引入基本配置
 const conf = require('./config/defaultConfig')
 
@@ -14,35 +14,7 @@ const conf = require('./config/defaultConfig')
 const server = http.createServer((rep, res) => {
   // 拿到路径
   const filePath = path.join(conf.root, rep.url)
-
-  // 判断是否为文件或者文件夹
-  fs.stat(filePath, (err, stats) => {
-    // 设置公共头部信息
-    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
-    if (err) {
-      // 状态码
-      res.statusCode = 404
-
-      // 找不到提示文本
-      res.end(`${filePath} is 404`)
-
-      return
-    }
-    if (stats.isFile()) {
-      // 如果是文件 返回文件内容
-      res.statusCode = 200
-
-      fs.createReadStream(filePath).pipe(res)
-    } else if (stats.isDirectory()) {
-      //  如果是文件夹，返回文件列表
-      fs.readdir(filePath, (err, files) => {
-        if (err) return
-        res.statusCode = 200
-
-        res.end(files.join(','))
-      })
-    }
-  })
+  route(rep, res, filePath)
 })
 
 // 监听 server 实例

@@ -9,6 +9,7 @@ module.exports = {
     node: true,
     es6: true,
   },
+  "parser": "babel-eslint",
   extends: ['eslint:recommended'],
 
   // add your custom rules here
