@@ -6,6 +6,8 @@ const readdir = promisify(fs.readdir)
 const conf = require('../config/defaultConfig')
 // 引入模板
 const Dir = require('../template/dir')
+// 引用mime 文件
+const mimeType = require('../header/mime')
 
 module.exports = async function(rep, res, filePath) {
   // 规避此问题require-atomic-updates报告在异步函数中重新分配变量时可能发生的竞争条件错误
@@ -13,7 +15,8 @@ module.exports = async function(rep, res, filePath) {
   try {
     const stats = await stat(filePath)
     if (stats.isFile()) {
-      awaitRes.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
+      const mimeTypes = mimeType(filePath)
+      awaitRes.writeHead(200, { 'Content-Type': mimeTypes })
       // 如果是文件 返回文件内容
       awaitRes.statusCode = 200
       fs.createReadStream(filePath).pipe(awaitRes)
