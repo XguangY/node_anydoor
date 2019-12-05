@@ -28,10 +28,16 @@ module.exports = async function(rep, res, filePath) {
 
       // 路径
       const dir = path.relative(conf.root, filePath)
+      const filesArr = files.toString().split(',') // 置换为数组
       const data = {
         title: path.basename(filePath),
         dir: dir ? `/${dir}` : '', // 需要注意一点`path.relative` 是相对与根路径计算的，如果我们真的访问根路径就会返回空
-        files: files.toString().split(',') // 置换为数组
+        files: filesArr.map(item => {
+          return {
+            fileName: item,
+            icon: mimeType(item)
+          }
+        })
       }
       awaitRes.end(Dir(data))
     }

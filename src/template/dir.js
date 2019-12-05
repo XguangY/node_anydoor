@@ -19,10 +19,18 @@ function Dir(data) {
        <meta http-equiv="X-UA-Compatible" content="ie=edge">
        <title>${data.title}</title>
        <style>
+            div {
+              padding: 5px 10px;
+            }
             a {
-                display: block;
                 font-size: 20px;
-                padding: 4px 10px;
+                padding: 0px 10px;
+            }
+            code {
+              background-color: #fff5f5;
+              color: #ff502c;
+              font-size: .87em;
+              padding: 2px 4px;
             }
         </style>
    </head>
@@ -36,12 +44,14 @@ function Dir(data) {
     return '参数类型错误'
   }
 }
-
 function itemFn(val) {
   let tem = ''
   val.files.map((item) => {
     tem += `
-        <a  href="${val.dir + '/' + item}">${item}</a>
+        <div>
+          <a  href="${val.dir + '/' + item.fileName}">${item.fileName}</a>
+          <code>${item.icon}</code>
+        </div>
     `
   })
   return tem
