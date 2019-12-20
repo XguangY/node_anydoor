@@ -8,18 +8,24 @@ const conf = require('../config/defaultConfig')
 const Dir = require('../template/dir')
 // 引用mime 文件
 const mimeType = require('../header/mime')
+// 引用压缩依赖
+const compress = require('./compress')
 
-module.exports = async function(rep, res, filePath) {
+module.exports = async function(req, res, filePath) {
   // 规避此问题require-atomic-updates报告在异步函数中重新分配变量时可能发生的竞争条件错误
   const awaitRes = await res
   try {
     const stats = await stat(filePath)
     if (stats.isFile()) {
       const mimeTypes = mimeType(filePath)
-      awaitRes.writeHead(200, { 'Content-Type': mimeTypes })
       // 如果是文件 返回文件内容
       awaitRes.statusCode = 200
-      fs.createReadStream(filePath).pipe(awaitRes)
+      let rs = fs.createReadStream(filePath)
+      // 使用哪个配置文件中的类型限制
+      if (filePath.match(conf.compress)) {
+        rs = compress(rs, req, awaitRes, mimeTypes)
+      }
+      rs.pipe(awaitRes)
     } else if (stats.isDirectory()) {
       awaitRes.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
       //  如果是文件夹，返回文件列表

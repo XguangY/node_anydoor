@@ -4,5 +4,7 @@ module.exports = {
   // 端口号
   port: 6969,
   // 当前文件夹
-  root: process.cwd()
+  root: process.cwd(),
+  // 配置压缩类型
+  compress: /\.(html|js|css|md)/
 }
