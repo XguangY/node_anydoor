@@ -10,6 +10,8 @@ const Dir = require('../template/dir')
 const mimeType = require('../header/mime')
 // 引用压缩依赖
 const compress = require('./compress')
+// 引用返回区间模块
+const range = require('./range')
 
 module.exports = async function(req, res, filePath) {
   // 规避此问题require-atomic-updates报告在异步函数中重新分配变量时可能发生的竞争条件错误
@@ -20,7 +22,15 @@ module.exports = async function(req, res, filePath) {
       const mimeTypes = mimeType(filePath)
       // 如果是文件 返回文件内容
       awaitRes.statusCode = 200
-      let rs = fs.createReadStream(filePath)
+      // let rs = fs.createReadStream(filePath)
+      let rs
+      const { code, start, end } = range(stats.size, req, res)
+      // 如果分割区段不成立,全量返回
+      if (code === 200) {
+        rs = fs.createReadStream(filePath)
+      } else {
+        rs = fs.createReadStream(filePath, { start, end })
+      }
       // 使用哪个配置文件中的类型限制
       if (filePath.match(conf.compress)) {
         rs = compress(rs, req, awaitRes, mimeTypes)
