@@ -3,7 +3,7 @@ const path = require('path')
 const promisify = require('util').promisify
 const stat = promisify(fs.stat)
 const readdir = promisify(fs.readdir)
-const conf = require('../config/defaultConfig')
+// const conf = require('../config/defaultConfig') // conf 是默认的配置 是不变的， 现在需要用户自行输入
 // 引入模板
 const Dir = require('../template/dir')
 // 引用mime 文件
@@ -15,7 +15,7 @@ const range = require('./range')
 // 引用缓存模块
 const isFresh = require('./cache')
 
-module.exports = async function(req, res, filePath) {
+module.exports = async function(req, res, filePath, conf) {
   // 规避此问题require-atomic-updates报告在异步函数中重新分配变量时可能发生的竞争条件错误
   const awaitRes = await res
   try {

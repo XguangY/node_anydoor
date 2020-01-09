@@ -7,20 +7,31 @@ const chalk = require('chalk')
 const path = require('path')
 
 const route = require('./header/route')
+
 // 引入基本配置
 const conf = require('./config/defaultConfig')
 
-// 创建一个server 实例
-const server = http.createServer((rep, res) => {
-  // 拿到路径
-  const filePath = path.join(conf.root, rep.url)
-  route(rep, res, filePath)
-})
+// 引入自动打开浏览器模块
+const openUrl = require('./header/openUrl')
 
-// 监听 server 实例
+class Server {
+  constructor(config) {
+    // 拼接默认配置和用户传来的配置
+    this.conf = Object.assign({}, conf, config)
+  }
+  start() {
+    const server = http.createServer((req, res) => {
+      // 拿到文件路径
+      const filePath = path.join(this.conf.root, req.url)
+      route(req, res, filePath, this.conf)
+    })
 
-server.listen(conf.port, conf.hostname, () => {
-  const addr = `http:// ${conf.hostname}:${conf.port}`
+    server.listen(this.conf.port, this.conf.hostname, () => {
+      const addr = `http://${this.conf.hostname}:${this.conf.port}`
+      console.log(`Server started at ${chalk.green(addr)}`)
+      openUrl(addr)
+    })
+  }
+}
 
-  console.info(`server startd at ${chalk.green(addr)}`)
-})
+module.exports = Server
