@@ -1,6 +1,6 @@
 {
-    "name": "node_anydoor",
-    "version": "0.1.0",
+    "name": "xgy_node_anydoor",
+    "version": "0.1.1",
     "description": "tiny nodejs web server",
     "main": "src/app.js",
     "bin": {
